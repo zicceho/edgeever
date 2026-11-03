@@ -18,7 +18,7 @@
     <a href="README.zh-CN.md">简体中文</a> | <a href="README.zh-TW.md">繁體中文</a> | <a href="README.md">English</a> | <b>日本語</b> | <a href="README.pl-PL.md">Polski</a>
   </p>
   <p>
-    <a href="https://t.me/+wwUx1BYLrIdiZjY1"><img src="assets/readme/community/telegram.svg" alt="Telegram" width="16" height="16" align="absmiddle" /> Telegram グループ</a> &nbsp;|&nbsp;
+    <a href="https://t.me/+GvKYnL37feUwOTNl"><img src="assets/readme/community/telegram.svg" alt="Telegram" width="16" height="16" align="absmiddle" /> Telegram グループ</a> &nbsp;|&nbsp;
     <a href="https://demo.edgeever.org">🌐 オンラインデモ</a> &nbsp;|&nbsp;
     <a href="#全プラットフォームクライアントと拡張機能">📱 クライアントと拡張機能</a> &nbsp;|&nbsp;
     <a href="#features">機能とワークフローマトリクス</a>
@@ -89,7 +89,7 @@ EdgeEver は、オープンソースのノートと知識ベースの作業領�
 | **整理と検索** | • 無制限階層のノートブックとフォルダツリー<br>• タグシステム、ドラッグ＆ドロップ並べ替え、一括結合・移動<br>• ミリ秒単位のインクリメンタル全文検索とフィルタ | • **独立した知識ベースサイト公開**：ノートブック全体をツリーナビゲーション付きの静的 Web サイトとしてワンクリック公開（パスワード保護対応）<br>• マルチアカウント・複数ワークスペースの物理分離 |
 | **収集とメディア** | • デスクトップ・モバイルでの各種添付ファイル（PDF、Office、音声・動画など）保存<br>• ブラウザ拡張によるテキスト・画像の選択クリップ<br>• スマホの共有メニューから画像や Web 記事を即時保存 | • **高度な構造化クリッピング**：小紅書、X (Twitter)、知乎、Reddit、GitHub、YouTube、Bilibili など 20 以上の主要サービスに対応<br>• **微信チャット履歴の取り込み**：タイムライン、発言者、引用、スタンプ、メディアを完全保持<br>• **クライアント側自動圧縮**：画像アップロード時に 50%〜90% 自動軽量化；最大 1 GiB の分割ストリーミングアップロード対応 |
 | **データと可視化** | • ネイティブ表編集と Markdown テーブル描画<br>• Mermaid 記法によるフローチャート・シーケンス図・構成図の直接描画 | • **AI 多次元テーブル**：プロンプトからタグや日付などの列型を備えた業務テーブルを自動生成<br>• **一般公開集計フォーム**：ログイン不要の Web フォームを発行し、回答をリアルタイムでテーブルへ集約<br>• **AI インフォグラフィック生成**：タイムライン、比較図、マトリクス、マインドマップを自動生成 |
-| **AI とエコシステム** | • サイドバーの伴走型 AI アシスタント（要約、校正、翻訳、推敲）<br>• BYOK（独自 API キー）：OpenAI、Anthropic、Gemini 互換プロトコル対応 | • **ネイティブ Agent プロトコル連携**：外部 Agent が読み書きできる MCP、ローカル Agent を直接呼び出す ACP を標準搭載<br>• **AI RSS 購読日報**：フィードを自動収集し、AI がノイズを排除して構造化日報を作成<br>• 自由な拡張を可能にするプラグイン開発 API |
+| **AI とエコシステム** | • サイドバーの伴走型 AI アシスタント（要約、校正、翻訳、推敲）<br>• BYOK（独自 API キー）：OpenAI、Anthropic、Gemini 互換プロトコル対応 | • **ネイティブ Agent プロトコル連携**：外部 Agent が読み書きできる MCP、Codex、Claude Code、CodeBuddy などのローカル Agent を直接呼び出す ACP を標準搭載<br>• **AI RSS 購読日報**：フィードを自動収集し、AI がノイズを排除して構造化日報を作成<br>• 自由な拡張を可能にするプラグイン開発 API |
 | **マルチ端末同期と基盤** | • PC・スマホ・タブレット間で低遅延・シームレスに同期、接続端末数無制限<br>• Web、macOS、Windows、Linux、iOS、Android の全プラットフォーム公式対応<br>• オフラインファーストと自動同期キュー：オフラインでも軽快に執筆、再接続時に自動増分同期<br>• 標準 SQLite、可逆 ZIP アーカイブ・Markdown の入出力に対応 | • **生涯サーバー代ゼロ**：Cloudflare の無料枠で 100% 稼働（短文約 15 万件＋画像約 5 万枚）<br>• **自由な Docker セルフホスト**：自宅サーバー・VPS・NAS にワンクリック配置、数百万件規模の高速同期に対応<br>• サーバー側ブルートフォース保護とセキュリティ隔離 |
 
 ## 導入
@@ -288,7 +288,7 @@ content_text      全文検索、要約生成、索引
 
 EdgeEver コミュニティへようこそ。Vibe Coding や AI を探求する仲間が集まり、最先端の AI 生産性と個人ナレッジベースのベストプラクティスを共有しています。
 
-👉 [EdgeEver の Telegram グループに参加](https://t.me/+wwUx1BYLrIdiZjY1)
+👉 [EdgeEver の Telegram グループに参加](https://t.me/+GvKYnL37feUwOTNl)
 
 ## 関連リンク
 
@@ -307,6 +307,7 @@ EdgeEver は無料のオープンソースプロジェクトです。クロス�
 - マインドマップと視覚的な図のノートは、[XMind](https://xmind.com/) と [ProcessOn](https://www.processon.com/) の公開されている製品体験を参考にしています。関連機能は EdgeEver が独自に設計し、実装しています。
 - EdgeEver のポスターデザイン機能は、向阳乔木（joeseesun）の [Qiaomu Design](https://github.com/joeseesun/qiaomu-cover-design) を参考にし、MIT ライセンスに基づいてテンプレートと文字組みエンジンを改変して利用しています。
 - EdgeEver の画像共有カードのテーマデザインと文字組みは、[流光卡片（Firefly Card）](https://fireflycard.shushiai.com/) を参考にしています。デザインから得た着想に感謝します。
+- EdgeEver の WeChat 向けワンクリック組版および特集記事のビジュアルデザインは、[gzh-design-skill](https://github.com/isjiamu/gzh-design-skill)（isjiamu 氏）を参考にしています。記事レイアウトとデザインの着想に感謝します。
 
 ## 商標とブランド
 
