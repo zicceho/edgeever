@@ -35,6 +35,7 @@ import {
   updateTableCell,
   type MemoDetail,
   type MemoSummary,
+  type MemoUpdateInput,
   type TableDocument,
 } from "@edgeever/shared";
 import { audit, auditStatement } from "./audit";
@@ -94,11 +95,6 @@ import {
     normalizeFilename,
   } from "./resource-service";
 import { assertScope, getActorLabel, getAuditActor } from "./request-auth";
-import {
-  createPendingResourceUpload,
-  parseResourceIds,
-  preparePendingResourceBinding,
-} from "./pending-resource-service";
 import { restoreMissingDefaultAiPrompts } from "./ai-prompt-seed";
 import {
   getAiPromptTemplateRow,
@@ -115,9 +111,19 @@ import {
   import type { DatabaseAdapter } from "./storage-contract";
   import { getWorkspaceStats } from "./workspace-stats-service";
 
+type MemoUpdateResult =
+  | { memo: MemoDetail; error?: never; message?: never; status?: never; details?: never }
+  | { error: string; message: string; status?: number; details?: Record<string, unknown> };
+
 export type McpToolDependencies = {
   clampNumber: (value: number, min: number, max: number) => number;
-  createMemoRecord: typeof import("./memo-service").createMemoRecord;
+  createMemoRecord: (
+    database: DatabaseAdapter,
+    workspaceId: string,
+    input: { notebookId: string; title?: string; contentJson?: unknown; contentMarkdown?: string; tags?: string[]; createdAt?: string; updatedAt?: string },
+    actor: AuditActor,
+    actorLabel: string,
+  ) => Promise<MemoDetail>;
   deleteMemosRecord: (
     environment: Bindings,
     workspaceId: string,
@@ -178,7 +184,15 @@ export type McpToolDependencies = {
     actor: AuditActor,
   ) => Promise<number>;
   searchMemoSummaries: typeof import("./memo-service").searchMemoSummaries;
-  updateMemoRecord: typeof import("./memo-service").updateMemoRecord;
+  updateMemoRecord: (
+    database: DatabaseAdapter,
+    workspaceId: string,
+    memoId: string,
+    input: MemoUpdateInput,
+    actor: AuditActor,
+    actorLabel: string,
+    requireEditSession?: boolean,
+  ) => Promise<MemoUpdateResult>;
 };
 
 type McpInputSchema<T> = {
@@ -224,24 +238,6 @@ const memoWithoutInfographicPayload = (memo: MemoDetail) => {
   const contentMarkdown = stripInfographicDocumentMarker(memo.contentMarkdown);
   const contentJson = markdownToDoc(contentMarkdown);
   return { ...memo, contentMarkdown, contentJson, contentText: docToText(contentJson) };
-};
-
-/**
- * The memo batch rolls back when a pending resource was bound or cleaned up by
- * another call after it was checked. Report that instead of a storage error.
- */
-const withBindingConflict = async <T>(binding: boolean, run: () => Promise<T>): Promise<T> => {
-  try {
-    return await run();
-  } catch (error) {
-    if (!binding || error instanceof AppError) throw error;
-    console.error("EdgeEver pending resource binding failed", error);
-    throw new AppError(
-      "pending_resource_conflict",
-      "No changes were made: a resource could not be bound because another call bound it or it expired. Check the resource ids and try again.",
-      409,
-    );
-  }
 };
 
 export const callMcpTool = async (
@@ -462,32 +458,16 @@ export const callMcpTool = async (
       const notebookId = getRequiredString(args.notebookId, "notebookId");
       const actor = getAuditActor(c);
       const actorLabel = getActorLabel(c);
-      const resourceIds = parseResourceIds(args.resourceIds) ?? [];
-      const bind = await preparePendingResourceBinding(c.env.storage.db, auth, resourceIds, actor);
-      const memo = await withBindingConflict(Boolean(bind), () => createMemoRecord(c.env.storage.db, auth.workspaceId, {
+      const memo = await createMemoRecord(c.env.storage.db, auth.workspaceId, {
         notebookId,
         title: getOptionalString(args.title) ?? undefined,
         contentMarkdown: getOptionalString(args.contentMarkdown) ?? "",
         tags: getOptionalStringArray(args.tags),
         createdAt: getOptionalString(args.createdAt) ?? undefined,
         updatedAt: getOptionalString(args.updatedAt) ?? undefined,
-      }, actor, actorLabel, bind ?? undefined));
+      }, actor, actorLabel);
 
-      return { memo, ...(resourceIds.length ? { resources: await listResourcesForMemo(c.env.storage.db, auth.workspaceId, memo.id) } : {}) };
-    }
-    case "create_resource_upload_url": {
-      assertScope(auth, "write:resources");
-      const kind = getRequiredString(args.kind, "kind");
-      if (kind !== "image" && kind !== "attachment") {
-        throw new AppError("invalid_params", 'kind must be "image" or "attachment".', 400);
-      }
-      return await createPendingResourceUpload(c, auth, {
-        kind,
-        mimeType: getRequiredString(args.mimeType, "mimeType"),
-        filename: getOptionalString(args.filename),
-        byteSize: typeof args.byteSize === "number" ? args.byteSize : Number.NaN,
-        label: getOptionalString(args.label),
-      });
+      return { memo };
     }
     case "create_infographic_memo": {
       assertScope(auth, "write:memos");
@@ -715,9 +695,7 @@ export const callMcpTool = async (
       }
       const actor = getAuditActor(c);
       const actorLabel = getActorLabel(c);
-      const resourceIds = parseResourceIds(args.resourceIds) ?? [];
-      const bind = await preparePendingResourceBinding(c.env.storage.db, auth, resourceIds, actor);
-      const result = await withBindingConflict(Boolean(bind), () => updateMemoRecord(
+      const result = await updateMemoRecord(
         c.env.storage.db,
         auth.workspaceId,
         memoId,
@@ -735,19 +713,14 @@ export const callMcpTool = async (
           updatedAt: getOptionalString(args.updatedAt) ?? undefined,
         },
         actor,
-        actorLabel,
-        false,
-        bind ? { before: [], after: bind } : undefined,
-      ));
+        actorLabel
+      );
 
       if ("error" in result) {
         throw new Error(result.message);
       }
 
-      return {
-        memo: result.memo,
-        ...(resourceIds.length ? { resources: await listResourcesForMemo(c.env.storage.db, auth.workspaceId, memoId) } : {}),
-      };
+      return { memo: result.memo };
     }
     case "trash_memos": {
       assertScope(auth, "write:memos");
