@@ -83,4 +83,3 @@ export * from "./poster-operations";
 export * from "./infographic-operations";
 
 export * from "./resource-media";
-export * from "./publish-image";

@@ -3058,7 +3058,6 @@ const RichEditorPane = ({
     setShareOpen,
     shareOpen,
     wechatCopyState,
-    wechatCopyError,
   } = useEditorDocumentActions({
     canShareMemo: Boolean(memo && !readOnly),
     documentActionRequest,
@@ -5071,7 +5070,7 @@ const RichEditorPane = ({
 
       {(wechatCopyState === "copied" || wechatCopyState === "error") && (
         <ClipboardCopyNotice status={wechatCopyState === "copied" ? "copied" : "error"}>
-          {wechatCopyState === "error" && wechatCopyError ? wechatCopyError : t(wechatCopyState === "copied" ? "editor.copiedToWeChat" : "editor.copyToWeChatFailed")}
+          {t(wechatCopyState === "copied" ? "editor.copiedToWeChat" : "editor.copyToWeChatFailed")}
         </ClipboardCopyNotice>
       )}
 

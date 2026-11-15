@@ -85,7 +85,6 @@ import { registerPluginCapabilityRoutes } from "./plugin-capability-routes";
 import { registerCompanionRoutes } from "./companion-routes";
 import { registerAiPromptRoutes } from "./ai-prompt-routes";
 import { registerResourceRoutes } from "./resource-routes";
-import { registerPublicPublishImageRoutes, registerPublishImageRoutes } from "./publish-image-routes";
 import {
   abortResourceUpload,
   completeResourceUpload,
@@ -270,7 +269,6 @@ registerPublicShareRoutes(app);
 registerPublicNotebookShareRoutes(app);
 registerPublicTableFormRoutes(app);
 registerPublicPendingResourceRoutes(app);
-registerPublicPublishImageRoutes(app);
 
 registerAuthRoutes(app, {
   authenticateRequest: (...args) => authenticateRequest(...args),
@@ -415,7 +413,6 @@ registerMcpRoutes(app, {
 });
 
 
-registerPublishImageRoutes(app);
 registerResourceRoutes(app, {
   clampNumber: (...args) => clampNumber(...args),
   createAttachmentResource: (...args) => createAttachmentResource(...args),
